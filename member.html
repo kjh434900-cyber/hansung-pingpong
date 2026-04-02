@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="한성탁구 회원">
+<meta name="theme-color" content="#1A1A1A">
+<title>한성 탁구 클럽 · 회원</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#1A1A1A;}
+.phone{width:100vw;min-height:100dvh;display:flex;flex-direction:column;position:relative;background:#ffffff;max-width:430px;margin:0 auto;}
+.status-bar{background:#1A1A1A;height:44px;flex-shrink:0;}
+.ahead{background:#1A1A1A;padding:0 16px 12px;border-bottom:2px solid #C8102E;flex-shrink:0;}
+.htop{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.htop-left{display:flex;align-items:center;gap:9px;}
+.cname{font-size:10px;font-weight:500;letter-spacing:.1em;color:#bbb;text-transform:uppercase;}
+.htitle{font-size:17px;font-weight:500;color:#ffffff;line-height:1.2;}
+.mtag{display:inline-block;background:#C8102E;color:#ffffff;font-size:9px;font-weight:500;padding:2px 8px;border-radius:20px;text-transform:uppercase;margin-top:4px;}
+.logout-btn{background:transparent;border:1px solid #777;border-radius:20px;font-size:10px;padding:3px 9px;cursor:pointer;color:#dddddd;}
+.auth-section{flex:1;background:#1A1A1A;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 22px;}
+.auth-logo{margin-bottom:18px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.auth-logo-sub{font-size:10px;color:#666;letter-spacing:.12em;text-transform:uppercase;}
+.auth-title{font-size:18px;font-weight:500;color:#ffffff;margin-bottom:4px;}
+.auth-sub{font-size:12px;color:#888;margin-bottom:20px;text-align:center;line-height:1.5;}
+.auth-field{width:100%;background:#222;border:1px solid #444;border-radius:10px;padding:12px 14px;font-size:14px;color:#ffffff;margin-bottom:10px;outline:none;font-family:inherit;}
+.auth-field:focus{border-color:#666;}
+.auth-field::placeholder{color:#555;}
+.auth-btn-main{width:100%;padding:13px;background:#C8102E;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;margin-top:2px;}
+.auth-err{font-size:12px;color:#ff6060;min-height:16px;margin-bottom:6px;width:100%;}
+.deleted-notice{display:none;margin-top:14px;padding:10px 14px;background:#2a1010;border:1px solid #5a2020;border-radius:10px;font-size:12px;color:#ff8080;text-align:center;line-height:1.6;width:100%;}
+.app-section{display:none;flex:1;flex-direction:column;position:relative;}
+.app-section.active{display:flex;}
+.abody{flex:1;overflow-y:auto;padding:0 0 80px;}
+.sec{padding:12px 14px 0;}
+.stitle{font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:#888;margin-bottom:7px;}
+.srow{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;}
+.sc{background:#f5f5f5;border-radius:10px;padding:8px 6px;text-align:center;}
+.sc .n{font-size:20px;font-weight:500;color:#111;}
+.sc .l{font-size:10px;color:#888;margin-top:2px;}
+.card{background:#fff;border:1px solid #e8e8e8;border-radius:14px;margin-bottom:8px;overflow:hidden;}
+.crow{display:flex;align-items:center;padding:9px 12px;gap:9px;border-bottom:1px solid #f0f0f0;}
+.crow:last-child{border-bottom:none;}
+.inf{flex:1;min-width:0;}
+.nm{font-size:13px;font-weight:500;color:#111;}
+.ds{font-size:11px;color:#888;margin-top:1px;}
+.bdg{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:500;flex-shrink:0;}
+.b-ok{background:#D4EBD4;color:#2A6A2A;}
+.b-no{background:#F5D0D8;color:#C8102E;}
+.b-pend{background:#FFF5CC;color:#7A6000;}
+.b-blu{background:#D0E4F5;color:#1A4A7A;}
+.b-grey{background:#f0f0f0;color:#888;}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;display:flex;border-top:1px solid #eee;background:#fff;padding:7px 0 14px;z-index:20;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;}
+.nl{font-size:9px;color:#aaa;font-weight:500;}
+.ni.active .nl{color:#C8102E;}
+.pg{display:none;flex:1;flex-direction:column;}
+.pg.active{display:flex;}
+.dov{display:none;position:absolute;inset:0;background:#fff;z-index:10;flex-direction:column;overflow-y:auto;padding-bottom:20px;}
+.dov.open{display:flex;}
+.dhd{background:#1A1A1A;padding:12px 15px 11px;display:flex;align-items:center;gap:10px;border-bottom:2px solid #C8102E;flex-shrink:0;}
+.dhn{font-size:15px;font-weight:500;color:#ffffff;}
+.dhs{font-size:11px;color:#888;margin-top:1px;}
+.dsec{padding:13px 14px 0;}
+.rpill{background:#F5D0D8;color:#C8102E;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;}
+.svb{width:100%;padding:10px;background:#C8102E;color:#ffffff;border:none;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;margin-top:8px;}
+.bbook{width:100%;padding:10px;background:#C8102E;color:#ffffff;border:none;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;}
+.flbl{font-size:12px;color:#888;margin-bottom:4px;}
+.date-trigger{width:100%;font-size:13px;padding:8px 10px;border-radius:8px;border:1px solid #ddd;background:#f5f5f5;color:#333;cursor:pointer;text-align:left;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;}
+.mini-cal{background:#fff;border:1px solid #ddd;border-radius:14px;padding:10px;margin-bottom:9px;display:none;}
+.mini-cal.open{display:block;}
+.mini-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.mini-mn{font-size:12px;font-weight:500;color:#333;}
+.mini-dow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px;}
+.mini-dow span{font-size:9px;color:#aaa;text-align:center;}
+.mini-days{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;}
+.mday{font-size:11px;text-align:center;padding:4px 2px;border-radius:4px;cursor:pointer;color:#333;}
+.mday:hover{background:#f0f0f0;}
+.mday.msel{background:#C8102E;color:#ffffff;border-radius:50%;}
+.mday.mtoday{color:#C8102E;font-weight:500;}
+.mday.mother,.mday.mpast{color:#ccc;pointer-events:none;}
+.time-row{display:flex;gap:8px;align-items:center;margin-bottom:9px;}
+.time-inp{flex:1;font-size:13px;padding:7px 8px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#333;}
+.time-sep{font-size:12px;color:#aaa;}
+.navb{border:none;background:none;font-size:16px;cursor:pointer;color:#aaa;padding:2px 8px;}
+.alert-box{background:#FFF5CC;border:1px solid #D4A000;border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:12px;color:#7A6000;line-height:1.5;}
+.ccard{background:#1A1A1A;border-radius:14px;padding:18px 15px;margin-bottom:10px;}
+.cavt{width:50px;height:50px;border-radius:50%;background:#C8102E;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
+.ccnm{font-size:17px;font-weight:500;color:#ffffff;text-align:center;}
+.ccsb{font-size:11px;color:#888;text-align:center;margin-top:2px;}
+.cinr{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #333;font-size:12px;}
+.cinr:last-child{border-bottom:none;}
+.cilb{color:#888;}.civl{color:#ffffff;}
+.cbtn{width:100%;padding:12px;background:#C8102E;color:#ffffff;border:none;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:7px;}
+.ls{border-left:3px solid;border-radius:0 8px 8px 0;padding:8px 10px;margin-bottom:6px;}
+.ls.grn{border-color:#2A6A2A;background:#D4EBD4;}
+.ls.ylw{border-color:#7A6000;background:#FFF5CC;}
+.ls .lt{font-size:10px;color:#666;font-weight:500;}
+.ls .lttl{font-size:13px;font-weight:500;color:#111;margin-top:1px;}
+.cal{padding:0 14px;}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-top:8px;}
+.mth{font-size:14px;font-weight:500;color:#111;}
+.dow-row{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;margin-bottom:4px;}
+.dow{font-size:10px;color:#aaa;padding:3px 0;}
+.day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.day{display:flex;flex-direction:column;align-items:center;padding:4px 2px;border-radius:8px;cursor:pointer;min-height:38px;}
+.day:hover{background:#f5f5f5;}
+.day.today .dn{background:#C8102E;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
+.day.selday .dn{background:#1A1A1A;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
+.day.other .dn{color:#ccc;}
+.dn{font-size:12px;color:#333;line-height:22px;width:22px;height:22px;text-align:center;}
+.dots{display:flex;gap:2px;margin-top:2px;}
+.dot{width:4px;height:4px;border-radius:50%;}
+.dot-g{background:#2A6A2A;}.dot-y{background:#7A6000;}.dot-r{background:#C8102E;}.dot-b{background:#1A4A7A;}
+.day-detail{background:#f5f5f5;border-radius:14px;margin:10px 14px 0;padding:10px 12px;min-height:60px;}
+.dd-title{font-size:11px;font-weight:500;color:#888;margin-bottom:8px;}
+.dd-empty{font-size:12px;color:#aaa;text-align:center;padding:10px 0;}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 16px;border-radius:20px;font-size:12px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="phone" id="mp">
+  <div class="status-bar"></div>
+  <div class="ahead">
+    <div class="htop">
+      <div class="htop-left">
+        <svg width="26" height="26" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="19" fill="#1A1A1A" stroke="#C8102E" stroke-width="1.5"/><ellipse cx="14" cy="14" rx="7" ry="7" transform="rotate(-35 14 14)" fill="#C8102E"/><ellipse cx="14" cy="14" rx="4" ry="4" transform="rotate(-35 14 14)" fill="#E8637A" opacity="0.5"/><line x1="17" y1="19" x2="27" y2="31" stroke="#C9A87A" stroke-width="3" stroke-linecap="round"/><ellipse cx="28" cy="13" rx="7" ry="7" transform="rotate(35 28 13)" fill="#1A1A1A" stroke="#aaa" stroke-width="1"/><ellipse cx="28" cy="13" rx="4" ry="4" transform="rotate(35 28 13)" fill="#555" opacity="0.6"/><line x1="24" y1="18" x2="14" y2="31" stroke="#C9A87A" stroke-width="3" stroke-linecap="round"/></svg>
+        <span class="cname">Hansung Pingpong</span>
+      </div>
+      <button class="logout-btn" id="m-logout" style="display:none;">로그아웃</button>
+    </div>
+    <div class="htitle" id="m-htitle">안녕하세요</div>
+    <div class="mtag">Member</div>
+  </div>
+  <div class="auth-section" id="m-auth">
+    <div class="auth-logo">
+      <svg width="44" height="44" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="19" fill="#1A1A1A" stroke="#C8102E" stroke-width="1.5"/><ellipse cx="14" cy="14" rx="7" ry="7" transform="rotate(-35 14 14)" fill="#C8102E"/><ellipse cx="14" cy="14" rx="4" ry="4" transform="rotate(-35 14 14)" fill="#E8637A" opacity="0.5"/><line x1="17" y1="19" x2="27" y2="31" stroke="#C9A87A" stroke-width="3" stroke-linecap="round"/><ellipse cx="28" cy="13" rx="7" ry="7" transform="rotate(35 28 13)" fill="#1A1A1A" stroke="#aaa" stroke-width="1"/><ellipse cx="28" cy="13" rx="4" ry="4" transform="rotate(35 28 13)" fill="#555" opacity="0.6"/><line x1="24" y1="18" x2="14" y2="31" stroke="#C9A87A" stroke-width="3" stroke-linecap="round"/></svg>
+      <span class="auth-logo-sub">Hansung Pingpong Club</span>
+    </div>
+    <div class="auth-title">반갑습니다 👋</div>
+    <div class="auth-sub">코치님께 받은 초대 코드와<br>이름을 입력하세요</div>
+    <input class="auth-field" id="m-name" placeholder="이름 (예: 최아름)">
+    <input class="auth-field" id="m-code" placeholder="초대 코드 (예: AB12CD)" maxlength="6" style="text-transform:uppercase;letter-spacing:.06em;">
+    <div class="auth-err" id="m-err"></div>
+    <button class="auth-btn-main" id="m-enter"><span style="color:#ffffff;display:block;">입장하기</span></button>
+    <div class="deleted-notice" id="m-deleted">⚠️ 코치님이 회원 정보를 삭제하셨습니다.<br>계속 이용하려면 코치님께 문의해주세요.<br><span style="font-size:11px;color:#999;margin-top:4px;display:block;">📞 010-2651-9999</span></div>
+  </div>
+  <div class="app-section" id="m-app">
+    <div class="pg active" id="m-home">
+      <div class="abody">
+        <div class="sec"><div class="srow"><div class="sc"><div class="n" id="m-monthly-n">0</div><div class="l">이달 수강</div></div><div class="sc"><div class="n" id="m-rem">0</div><div class="l">잔여 횟수</div></div><div class="sc"><div class="n" id="m-pend-n">0</div><div class="l">대기중</div></div></div></div>
+        <div class="sec"><div class="stitle">앞으로의 레슨 일정</div><div id="m-upcoming"></div></div>
+        <div class="sec">
+          <div class="stitle">예약 신청 · 1:1 레슨</div>
+          <div class="card"><div style="padding:12px;">
+            <div class="flbl">날짜 선택</div>
+            <button class="date-trigger" id="dt-btn"><span id="dt-label">날짜를 선택하세요</span><span style="font-size:11px;">▾</span></button>
+            <div class="mini-cal" id="mini-cal"><div class="mini-nav"><button class="navb" id="mp-prev">‹</button><div class="mini-mn" id="mp-mth"></div><button class="navb" id="mp-next">›</button></div><div class="mini-dow"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="mini-days" id="mp-days"></div></div>
+            <div class="flbl">시작 시간</div>
+            <div class="time-row"><input class="time-inp" id="ms-start" type="time" value="09:00"><div class="time-sep">~</div><input class="time-inp" id="ms-end" type="time" value="09:25" readonly style="opacity:.6;"></div>
+            <button class="bbook" id="btn-book">예약 신청하기</button>
+          </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="pg" id="m-cal">
+      <div class="abody"><div class="cal"><div class="cal-nav"><button class="navb" id="mprev">‹</button><div class="mth" id="m-mth"></div><button class="navb" id="mnext">›</button></div><div class="dow-row"><div class="dow">일</div><div class="dow">월</div><div class="dow">화</div><div class="dow">수</div><div class="dow">목</div><div class="dow">금</div><div class="dow">토</div></div><div class="day-grid" id="m-grid"></div></div><div class="day-detail"><div class="dd-title" id="m-dtitle">날짜를 선택하세요</div><div id="m-dlist"></div></div></div>
+    </div>
+    <div class="pg" id="m-coach">
+      <div class="abody"><div class="sec" style="padding-top:14px;">
+        <div class="ccard">
+          <div class="cavt"><svg width="24" height="24" viewBox="0 0 40 40" fill="none"><ellipse cx="14" cy="14" rx="7" ry="7" transform="rotate(-35 14 14)" fill="white" opacity="0.9"/><line x1="17" y1="19" x2="27" y2="31" stroke="#C9A87A" stroke-width="3" stroke-linecap="round"/><ellipse cx="28" cy="13" rx="7" ry="7" transform="rotate(35 28 13)" fill="white" opacity="0.5"/><line x1="24" y1="18" x2="14" y2="31" stroke="#C9A87A" stroke-width="3" stroke-linecap="round"/></svg></div>
+          <div class="ccnm" id="m-coach-name">코치님</div>
+          <div class="ccsb">한성 탁구 클럽 · 전임 코치</div>
+          <div style="border-top:1px solid #333;margin-top:12px;">
+            <div class="cinr"><span class="cilb">전화번호</span><span class="civl" id="m-coach-phone">-</span></div>
+            <div class="cinr"><span class="cilb">레슨 요일</span><span class="civl" id="m-coach-days">-</span></div>
+            <div class="cinr"><span class="cilb">잔여 수업</span><span class="civl"><span id="cp-rem">0</span>회</span></div>
+          </div>
+          <button class="cbtn" id="btn-m-call"><svg width="14" height="14" viewBox="0 0 20 20" fill="white"><path d="M3 3h4l2 4-2.5 1.5c1 2 3 4 5 5L13 11l4 2v4a1 1 0 01-1 1C6 18 2 6 2 4a1 1 0 011-1z"/></svg>전화하기</button>
+        </div>
+        <div class="stitle">나의 수강 현황</div>
+        <div class="card">
+          <div class="crow"><div class="inf"><div class="nm">이달 수강</div></div><span style="font-size:15px;font-weight:500;color:#111;" id="m-coach-monthly">0회</span></div>
+          <div class="crow"><div class="inf"><div class="nm">잔여 수업</div></div><span class="rpill"><span id="cp-rem2">0</span>회</span></div>
+          <div class="crow"><div class="inf"><div class="nm">누적 수강</div></div><span style="font-size:15px;font-weight:500;color:#111;" id="m-coach-total">0회</span></div>
+        </div>
+      </div></div>
+    </div>
+    <div class="dov" id="dov-ml">
+      <div class="dhd"><button onclick="document.getElementById('dov-ml').classList.remove('open')" style="background:none;border:none;cursor:pointer;font-size:22px;padding:0 8px 0 0;color:#ffffff;">←</button><div><div class="dhn">예약 수정</div><div class="dhs" id="ml-sub"></div></div></div>
+      <div class="dsec" style="margin-top:14px;" id="ml-body"></div>
+    </div>
+    <div class="bnav">
+      <div class="ni active" data-pg="m-home"><svg width="18" height="18" viewBox="0 0 20 20" fill="#aaa"><path d="M10 2L2 8v10h5v-5h6v5h5V8z"/></svg><div class="nl">홈</div></div>
+      <div class="ni" data-pg="m-cal"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#aaa" stroke-width="1.4"><rect x="3" y="4" width="14" height="14" rx="2"/><line x1="3" y1="8" x2="17" y2="8"/><line x1="7" y1="2" x2="7" y2="6"/><line x1="13" y1="2" x2="13" y2="6"/></svg><div class="nl">캘린더</div></div>
+      <div class="ni" data-pg="m-coach"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#aaa" stroke-width="1.4"><circle cx="10" cy="7" r="3.5"/><path d="M3 18c0-3.5 3-6 7-6s7 2.5 7 6"/></svg><div class="nl">내 코치</div></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const SB_URL='https://jihcqwxbsaejzfyndvfr.supabase.co';
+const SB_KEY='sb_publishable_TCfYKKbJf8mV-zboH4K6GQ_G_8CAWqx';
+async function api(path,method='GET',body=null){const h={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};const o={method,headers:h};if(body)o.body=JSON.stringify(body);const r=await fetch(SB_URL+'/rest/v1/'+path,o);const t=await r.text();return t?JSON.parse(t):[];}
+const NOW=new Date();
+const MONTHS='1월,2월,3월,4월,5월,6월,7월,8월,9월,10월,11월,12월'.split(',');
+const DOW='일월화수목금토'.split('');
+let COACH={name:'김중섭 코치',phone:'010-2651-9999'};
+let members=[],lessons=[],loggedMemberId=null;
+let mSelKey=null,mCal={y:NOW.getFullYear(),m:NOW.getMonth()};
+let miniState={y:NOW.getFullYear(),m:NOW.getMonth()},miniSel=null,curMLId=null;
+const g=id=>document.getElementById(id);
+const pad=n=>String(n).padStart(2,'0');
+function key(y,m,d){return y+'-'+pad(m+1)+'-'+pad(d);}
+function addM(t,n){const[h,m]=t.split(':').map(Number),tot=h*60+m+n;return pad(Math.floor(tot/60)%24)+':'+pad(tot%60);}
+function hUntil(date,t){const[y,mo,d]=date.split('-').map(Number),[h,m]=t.split(':').map(Number);return(new Date(y,mo-1,d,h,m,0)-NOW)/3.6e6;}
+const todayKey=()=>{const n=NOW;return key(n.getFullYear(),n.getMonth(),n.getDate());}
+const getMember=id=>members.find(m=>m.id===id);
+const openDov=id=>g(id).classList.add('open');
+const closeDov=id=>g(id).classList.remove('open');
+const memberLessons=mid=>lessons.filter(l=>Number(l.member_id)===Number(mid));
+const CONFIRMED=['scheduled','ok','no'];
+const isConfirmed=att=>CONFIRMED.includes(att);
+function calcRemaining(mid){const m=getMember(mid);if(!m)return 0;return Math.max(0,m.cnt-memberLessons(mid).filter(l=>isConfirmed(l.att)).length);}
+function calcMonthly(mid){const y=NOW.getFullYear(),mo=NOW.getMonth();return memberLessons(mid).filter(l=>{const[ly,lmo]=l.date.split('-').map(Number);return isConfirmed(l.att)&&ly===y&&(lmo-1)===mo;}).length;}
+function calcTotal(mid){return memberLessons(mid).filter(l=>isConfirmed(l.att)).length;}
+function showToast(msg){const t=g('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+async function saveLesson(l){const data={id:l.id,date:l.date,t:l.t,e:l.e,member_id:l.member_id,att:l.att,mem_snap:l.mem_snap||''};await fetch(SB_URL+'/rest/v1/lessons',{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'resolution=merge-duplicates'},body:JSON.stringify(data)});}
+async function deleteLesson(id){await fetch(SB_URL+'/rest/v1/lessons?id=eq.'+id,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});}
+
+(async()=>{
+  const[ms,ls,cs]=await Promise.all([api('members?order=created_at.asc'),api('lessons?order=date.asc,t.asc'),api('coach_settings?id=eq.1')]);
+  members=ms||[];lessons=ls||[];if(cs&&cs[0])COACH={name:cs[0].name,phone:cs[0].phone};
+  g('m-coach-name').textContent=COACH.name;g('m-coach-phone').textContent=COACH.phone;
+  // ★ 자동 로그인: 저장된 코드로 회원 찾아서 바로 진입
+  const savedCode=localStorage.getItem('hs_member_code');
+  if(savedCode){
+    const saved=members.find(x=>x.code===savedCode);
+    if(saved){showMember(saved);return;}
+    else localStorage.removeItem('hs_member_code'); // 코드 무효 (삭제됐으면 제거)
+  }
+  setTimeout(()=>{const b=g('m-enter');if(b){b.style.color='#fff';const s=b.querySelector('span');if(s)s.style.color='#fff';}},0);
+})();
+
+// ★ 5초마다 자동 동기화 (로그인 상태일 때만)
+setInterval(async()=>{
+  if(!loggedMemberId)return;
+  try{
+    const[ms,ls]=await Promise.all([
+      api('members?order=created_at.asc'),
+      api('lessons?order=date.asc,t.asc')
+    ]);
+    members=ms||[];lessons=ls||[];
+    const me=members.find(x=>x.id===loggedMemberId);
+    if(!me){hideMember(true);return;}
+    syncMember();
+    if(mSelKey)renderMDay(mSelKey);
+    buildMCal();
+  }catch(e){}
+},5000);
+
+function showMember(m){
+  g('m-auth').style.display='none';g('m-app').classList.add('active');
+  g('m-logout').style.display='block';
+  g('m-htitle').textContent='안녕하세요, '+m.name+'님';
+  g('m-coach-name').textContent=COACH.name;g('m-coach-phone').textContent=COACH.phone;
+  g('m-coach-days').textContent=(m.wd||[]).join('·');g('m-deleted').style.display='none';
+  loggedMemberId=m.id;syncMember();buildMCal();
+}
+function hideMember(deleted){
+  g('m-auth').style.display='flex';g('m-app').classList.remove('active');
+  g('m-logout').style.display='none';g('m-name').value='';g('m-code').value='';g('m-err').textContent='';
+  g('m-htitle').textContent='안녕하세요';g('m-deleted').style.display=deleted?'block':'none';
+  loggedMemberId=null;mSelKey=null;
+  ['m-monthly-n','m-rem','m-pend-n','cp-rem','cp-rem2'].forEach(id=>{const e=g(id);if(e)e.textContent='0';});
+  g('m-coach-monthly').textContent='0회';g('m-coach-total').textContent='0회';
+  localStorage.removeItem('hs_member_code');
+}
+g('m-enter').onclick=async function(){
+  const name=g('m-name').value.trim(),code=g('m-code').value.trim().toUpperCase();
+  if(!name){g('m-err').textContent='이름을 입력하세요';return;}
+  if(!code){g('m-err').textContent='초대 코드를 입력하세요';return;}
+  // ★ 항상 최신 데이터로 확인
+  try{const fresh=await api('members?order=created_at.asc');if(fresh)members=fresh;}catch(e){}
+  const m=members.find(x=>x.code===code);
+  if(!m){g('m-err').textContent='유효하지 않은 초대 코드입니다';return;}
+  if(m.name&&m.name!==name){g('m-err').textContent='코드에 등록된 이름('+m.name+')과 다릅니다';return;}
+  localStorage.setItem('hs_member_code',code);
+  showMember(m);
+};
+g('m-name').addEventListener('keydown',e=>{if(e.key==='Enter')g('m-code').focus();});
+g('m-code').addEventListener('keydown',e=>{if(e.key==='Enter')g('m-enter').click();});
+g('m-code').addEventListener('input',function(){this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');});
+g('m-logout').onclick=()=>hideMember(false);
+g('btn-m-call').onclick=function(){window.location.href='tel:'+COACH.phone.replace(/-/g,'');};
+
+function syncMember(){
+  const mid=loggedMemberId;const m=getMember(mid);if(!m)return;
+  const rem=calcRemaining(mid);['m-rem','cp-rem','cp-rem2'].forEach(id=>{const e=g(id);if(e)e.textContent=rem;});
+  g('m-pend-n').textContent=memberLessons(mid).filter(l=>l.att==='pending').length;
+  const mc=calcMonthly(mid);g('m-monthly-n').textContent=mc;g('m-coach-monthly').textContent=mc+'회';
+  g('m-coach-total').textContent=calcTotal(mid)+'회';g('m-coach-days').textContent=(m.wd||[]).join('·');
+  renderMUpcoming();
+}
+function renderMUpcoming(){
+  const mid=loggedMemberId;const wrap=g('m-upcoming');wrap.innerHTML='';if(!mid)return;
+  const tk=todayKey();
+  const up=memberLessons(mid).filter(l=>l.att!=='ok'&&l.att!=='no'&&(l.date>tk||(l.date===tk&&hUntil(l.date,l.t)>-0.1))).sort((a,b)=>a.date.localeCompare(b.date)||a.t.localeCompare(b.t));
+  if(!up.length){wrap.innerHTML='<div style="font-size:12px;color:#aaa;">예정된 레슨이 없습니다</div>';return;}
+  up.slice(0,5).forEach(l=>{
+    const isToday=l.date===tk,[y,mo,d]=l.date.split('-').map(Number);
+    const dateStr=isToday?'오늘':mo+'/'+d+' ('+DOW[new Date(y,mo-1,d).getDay()]+')';
+    const isPend=l.att==='pending';
+    const div=document.createElement('div');div.className='ls '+(isPend?'ylw':'grn');
+    div.innerHTML='<div class="lt">'+dateStr+' · '+l.t+'~'+l.e+'</div><div class="lttl">1:1 레슨 <span style="font-size:10px;color:'+(isPend?'#7A6000':'#2A6A2A')+'">· '+(isPend?'승인 대기':'확정')+'</span></div>';
+    wrap.appendChild(div);
+  });
+}
+g('dt-btn').onclick=()=>{g('mini-cal').classList.toggle('open');buildMiniCal();};
+g('mp-prev').onclick=()=>{miniState.m--;if(miniState.m<0){miniState.m=11;miniState.y--;}buildMiniCal();};
+g('mp-next').onclick=()=>{miniState.m++;if(miniState.m>11){miniState.m=0;miniState.y++;}buildMiniCal();};
+g('ms-start').oninput=function(){if(this.value)g('ms-end').value=addM(this.value,25);};
+g('btn-book').onclick=async function(){
+  if(!miniSel){alert('날짜를 선택해주세요');return;}
+  const mid=loggedMemberId;if(!mid)return;const m=getMember(mid);if(!m)return;
+  const st=g('ms-start').value||'09:00';
+  const newL={id:'LM'+Date.now(),date:miniSel,t:st,e:addM(st,25),member_id:mid,att:'pending',mem_snap:m.name};
+  lessons.push(newL);await saveLesson(newL);syncMember();buildMCal();
+  this.textContent='신청 완료!';this.style.background='#888';this.disabled=true;
+  setTimeout(()=>{this.textContent='예약 신청하기';this.style.background='';this.disabled=false;miniSel=null;g('dt-label').textContent='날짜를 선택하세요';buildMiniCal();},3000);
+  showToast('예약 신청 완료!');
+};
+function buildMiniCal(){const{y,m}=miniState;g('mp-mth').textContent=y+'년 '+MONTHS[m];const grid=g('mp-days');grid.innerHTML='';const first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),prev=new Date(y,m,0).getDate(),tday=todayKey();for(let i=0;i<first;i++){const e=document.createElement('div');e.className='mday mother';e.textContent=prev-first+i+1;grid.appendChild(e);}for(let d=1;d<=days;d++){const k=key(y,m,d),past=k<tday,e=document.createElement('div');e.className='mday'+(k===tday?' mtoday':'')+(miniSel===k?' msel':'')+(past?' mpast':'');e.textContent=d;if(!past)e.onclick=()=>{miniSel=k;g('dt-label').textContent=(m+1)+'월 '+d+'일 ('+DOW[new Date(y,m,d).getDay()]+'요일)';g('mini-cal').classList.remove('open');buildMiniCal();};grid.appendChild(e);}}
+function openMLesson(lid){
+  const l=lessons.find(x=>x.id===lid);if(!l)return;curMLId=lid;g('ml-sub').textContent=l.date;
+  const body=g('ml-body');const hrs=hUntil(l.date,l.t),approved=isConfirmed(l.att),isPast=hrs<=0,tooLate=hrs>0&&hrs<6;
+  if(isPast||approved||tooLate){
+    const msg=isPast?'지난 수업':approved?'코치님이 이미 승인한 수업':'수업 시작 6시간 미만';
+    body.innerHTML='<div class="alert-box">⚠️ '+msg+'입니다.<br>수정은 코치님께 직접 연락해주세요.</div><button class="cbtn" style="width:100%;padding:12px;" id="ml-call">📞 코치님 전화하기</button>';
+    g('ml-call').onclick=function(){window.location.href='tel:'+COACH.phone.replace(/-/g,'');};
+  } else {
+    body.innerHTML='<div class="flbl">날짜</div><input style="width:100%;font-size:13px;padding:8px 10px;border-radius:8px;border:1px solid #ddd;background:#f5f5f5;color:#333;margin-bottom:9px;" value="'+l.date+'" readonly><div class="flbl">시작 시간</div><div class="time-row"><input class="time-inp" id="mle-s" type="time" value="'+l.t+'"><div class="time-sep">~</div><input class="time-inp" id="mle-e" type="time" value="'+l.e+'" readonly style="opacity:.6;"></div><button class="svb" id="mle-save">저장</button><button style="width:100%;padding:9px;background:transparent;color:#C8102E;border:1px solid #F5D0D8;border-radius:10px;font-size:12px;font-weight:500;cursor:pointer;margin-top:6px;" id="mle-del">예약 취소</button>';
+    g('mle-s').oninput=function(){if(this.value)g('mle-e').value=addM(this.value,25);};
+    g('mle-save').onclick=async function(){const l2=lessons.find(x=>x.id===curMLId);if(!l2)return;l2.t=g('mle-s').value;l2.e=addM(l2.t,25);await saveLesson(l2);closeDov('dov-ml');syncMember();buildMCal();if(mSelKey===l2.date)renderMDay(l2.date);};
+    g('mle-del').onclick=async function(){const l2=lessons.find(x=>x.id===curMLId);if(!l2)return;const date=l2.date;lessons=lessons.filter(x=>x.id!==curMLId);await deleteLesson(curMLId);closeDov('dov-ml');syncMember();buildMCal();if(mSelKey===date)renderMDay(date);};
+  }
+  openDov('dov-ml');
+}
+document.querySelectorAll('.ni').forEach(ni=>{ni.onclick=function(){const pg=this.dataset.pg;document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));g(pg).classList.add('active');document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));this.classList.add('active');closeDov('dov-ml');if(pg==='m-cal')buildMCal();};});
+g('mprev').onclick=()=>{mCal.m--;if(mCal.m<0){mCal.m=11;mCal.y--;}buildMCal();};g('mnext').onclick=()=>{mCal.m++;if(mCal.m>11){mCal.m=0;mCal.y++;}buildMCal();};
+function buildMCal(){const mid=loggedMemberId;const{y,m}=mCal;g('m-mth').textContent=y+'년 '+MONTHS[m];const grid=g('m-grid');grid.innerHTML='';const first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),prev=new Date(y,m,0).getDate(),tday=todayKey();for(let i=0;i<first;i++){const e=document.createElement('div');e.className='day other';e.innerHTML='<div class="dn">'+(prev-first+i+1)+'</div>';grid.appendChild(e);}for(let d=1;d<=days;d++){const k=key(y,m,d),slots=mid?memberLessons(mid).filter(l=>l.date===k):[],el=document.createElement('div');el.className='day'+(k===tday?' today':'')+(k===mSelKey?' selday':'');const dn=document.createElement('div');dn.className='dn';dn.textContent=d;el.appendChild(dn);if(slots.length){const dots=document.createElement('div');dots.className='dots';slots.forEach(s=>{const dt=document.createElement('div');dt.className='dot '+(s.att==='ok'?'dot-g':s.att==='no'?'dot-r':s.att==='pending'?'dot-y':'dot-b');dots.appendChild(dt);});el.appendChild(dots);}el.onclick=()=>{mSelKey=k;buildMCal();renderMDay(k);};grid.appendChild(el);}}
+function renderMDay(k){const mid=loggedMemberId;const[,mo,d]=k.split('-');g('m-dtitle').textContent=parseInt(mo)+'월 '+parseInt(d)+'일';const list=g('m-dlist');list.innerHTML='';const slots=mid?memberLessons(mid).filter(l=>l.date===k):[];slots.sort((a,b)=>a.t.localeCompare(b.t));if(!slots.length){list.innerHTML='<div class="dd-empty">수업 없음</div>';return;}const ac={ok:'b-ok',no:'b-no',pend:'b-pend',scheduled:'b-blu',pending:'b-pend'};const al={ok:'출석',no:'결석',pend:'미확인',scheduled:'확정',pending:'승인대기'};slots.forEach(l=>{const showEdit=l.att!=='ok'&&l.att!=='no';const div=document.createElement('div');div.style.cssText='border-radius:8px;padding:8px 10px;margin-bottom:5px;border:1px solid #eee;background:#fff;';div.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><div><div style="font-size:10px;color:#888;">'+l.t+'~'+l.e+'</div><div style="font-size:13px;font-weight:500;color:#111;margin-top:1px;">1:1 레슨</div></div><span class="bdg '+(ac[l.att]||'b-grey')+'">'+(al[l.att]||'?')+'</span></div>'+(showEdit?'<div><button style="font-size:10px;font-weight:500;border:1px solid #ddd;border-radius:6px;padding:3px 9px;cursor:pointer;background:transparent;color:#333;margin-top:7px;" data-lid="'+l.id+'">수정</button></div>':'');if(showEdit)div.querySelector('[data-lid]').onclick=()=>openMLesson(l.id);list.appendChild(div);});}
+buildMiniCal();g('m-mth').textContent=mCal.y+'년 '+MONTHS[mCal.m];
+</script>
+</body>
+</html>
